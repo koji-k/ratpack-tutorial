@@ -11,7 +11,7 @@ Windowsの場合はGroovyのインストーラがあるので、そちらを利�
 何れにせよ、Java（8以降）をインストールして、JAVA_HOMEを設定しておいてください。  
 この辺りは[Apache Groovyチュートリアルのinstall記事を参照してください。](http://koji-k.github.io/groovy-tutorial/startup/install.html)  
 
-最終的に、コンソール、コマンドプロンプトで以下のコマンドを実行して、インストールされているGroovyのコマンドが表示されればOKです。
+最終的に、コンソール、コマンドプロンプトで以下のコマンドを実行して、インストールされているGroovyのバージョンが表示されればOKです。
 
 ```
 [koji:ratpack]$ groovy -e "println GroovySystem.version"
