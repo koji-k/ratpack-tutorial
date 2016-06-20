@@ -135,11 +135,6 @@ import static ratpack.groovy.Groovy.groovyTemplate
 import ratpack.groovy.template.TextTemplateModule
 
 ratpack {
-
-    bindings {
-        module TextTemplateModule // for groovyTemplate
-    }
-
     handlers {
         path {
             render "こんにちわRatpack!"
