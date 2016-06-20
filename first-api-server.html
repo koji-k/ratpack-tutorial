@@ -1,0 +1,298 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>3. 初めてのAPIサーバ - Ratpack 入門</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/highlight.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/my.css">
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="header">
+        <i class="fa fa-bars sidebar-toggle"></i>
+        <span class="title"><a href="index.html">Ratpack 入門</a></span>
+      </div>
+      <div class="sidebar">
+        <ul>
+          <li class="numbered visible"><a href="index.html" data-alt-hash="ratpack-"><span class="number">1.</span>Ratpack 入門</a></li>
+          <li class="numbered visible">
+            <a href="helloworld.html" data-alt-hash="hello-world"><span class="number">2.</span>Hello World</a>
+            <ul>
+              <li class="numbered visible"><a href="helloworld.html#id-e159b5fe3deff4bba9449ecfa2717fd318060353"><span class="number">2.1.</span>まとめ</a></li>
+            </ul>
+          </li>
+          <li class="numbered visible">
+            <a href="first-api-server.html" data-alt-hash="api"><span class="number">3.</span>初めてのAPIサーバ</a>
+            <ul>
+              <li class="numbered visible"><a href="first-api-server.html#id-f87b7fba2142c45cd5e01a39e2550b677566d1a9"><span class="number">3.1.</span>準備</a></li>
+              <li class="numbered visible"><a href="first-api-server.html#id-b349138158ba770231c6ce090da3a5f47515116a"><span class="number">3.2.</span>実行</a></li>
+              <li class="numbered visible"><a href="first-api-server.html#id-63cf2091e465994cf906b89f1c709f899efcf6e4"><span class="number">3.3.</span>実際のAPIを追加する</a></li>
+              <li class="numbered visible"><a href="first-api-server.html#id-6519afc12890eb4e499aaa3393bdcc24b6768cf6"><span class="number">3.4.</span>参考：テンプレートを使う</a></li>
+            </ul>
+          </li>
+          <li class="numbered visible">
+            <a href="sample/1.html" data-alt-hash="test1"><span class="number">4.</span>test1</a>
+            <ul>
+              <li class="numbered visible"><a href="sample/2.html" data-alt-hash="test2"><span class="number">4.1.</span>test2</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="content">
+        <div class="content-handle"></div>
+        <div class="content-container">
+          <div class="content-nav content-nav-top">
+            <a class="prev-page" href="helloworld.html">
+            <i class="fa fa-angle-left"></i>
+            <span class="number">2.</span>
+            Hello World
+            </a>
+            <a class="next-page" href="sample/1.html">
+            <span class="number">4.</span>
+            test1
+            <i class="fa fa-angle-right"></i>
+            </a>
+          </div>
+          <div class="page-toc">
+            <ul>
+              <li class="numbered visible">
+                <a href="#api"><span class="number">3.</span>初めてのAPIサーバ</a>
+                <ul>
+                  <li class="numbered visible"><a href="#id-f87b7fba2142c45cd5e01a39e2550b677566d1a9"><span class="number">3.1.</span>準備</a></li>
+                  <li class="numbered visible"><a href="#id-b349138158ba770231c6ce090da3a5f47515116a"><span class="number">3.2.</span>実行</a></li>
+                  <li class="numbered visible"><a href="#id-63cf2091e465994cf906b89f1c709f899efcf6e4"><span class="number">3.3.</span>実際のAPIを追加する</a></li>
+                  <li class="numbered visible"><a href="#id-6519afc12890eb4e499aaa3393bdcc24b6768cf6"><span class="number">3.4.</span>参考：テンプレートを使う</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="main-content">
+            <h1 id="api"><span class="number">3.</span>初めてのAPIサーバ</h1>
+            <p>ココではサンプルとして、現在の日時をJSONで返すAPIサーバを構築していきます。<br/>最終的には、指定されたタイムゾーンで日時を計算して返すようなちょっと便利なAPIにしていきましょう。 前提条件としてGradleをインストールしておいてください。<br/>Gradleが入っていれば実はGroovyすら必要ありません。 </p>
+            <h2 id="id-f87b7fba2142c45cd5e01a39e2550b677566d1a9"><span class="number">3.1.</span>準備</h2>
+            <p>まずは必要なディレクトリを作成します。</p>
+            <pre><code class="nohighlight">[koji:ratpack]$ mkdir ratpackapp
+[koji:ratpack]$ cd ratpackapp 
+[koji:ratpackapp]$ mkdir -p src/ratpack/templates
+[koji:ratpackapp]$ mkdir -p src/ratpack/public/images
+[koji:ratpackapp]$ mkdir -p src/ratpack/public/scripts
+[koji:ratpackapp]$ mkdir -p src/ratpack/public/styles
+[koji:ratpackapp]$ mkdir -p src/ratpack/public/lib
+[koji:ratpackapp]$ mkdir -p src/main/groovy
+[koji:ratpackapp]$ mkdir -p src/src/groovy
+
+</code></pre>
+            <p>Gradleの設定ファイルを作成します。</p>
+            <p><code>build.gradle</code></p>
+            <pre><code class="nohighlight">buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath &quot;io.ratpack:ratpack-gradle:1.3.3&quot;
+  }
+}
+
+apply plugin: &quot;io.ratpack.ratpack-groovy&quot;
+apply plugin: &quot;idea&quot;
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+  runtime &quot;org.slf4j:slf4j-simple:1.7.12&quot;
+}
+</code></pre>
+            <p>以下のファイルを作成します。<br/>これは、<a href="helloworld.html">Hello World</a>で作成した<code>hello-ratpack.groovy</code>と同じものです。<br/>先頭から、@Grapes、@Grabが無くなってシンプルになっていますね。</p>
+            <p><code>src/ratpack/Ratpack.groovy</code></p>
+            <pre><code class="nohighlight">import static ratpack.groovy.Groovy.ratpack
+
+ratpack {
+    handlers {
+        path {
+            render &quot;Hello World!&quot;
+        }
+        path(&quot;:name&quot;) {
+            render &quot;Hello $pathTokens.name!&quot;
+        }
+    }
+}
+</code></pre>
+            <p>これで準備は整いました！<br/>現在、ディレクトリ構成は以下のようになっているはずです。</p>
+            <pre><code class="nohighlight">ratpackapp
+├── build.gradle
+└── src
+    ├── main
+    │   └── groovy
+    ├── ratpack
+    │   ├── Ratpack.groovy
+    │   ├── public
+    │   │   ├── images
+    │   │   ├── lib
+    │   │   ├── scripts
+    │   │   └── styles
+    │   └── templates
+    └── src
+        └── groovy
+</code></pre>
+            <h2 id="id-b349138158ba770231c6ce090da3a5f47515116a"><span class="number">3.2.</span>実行</h2>
+            <p><code>gradle run -t</code>を実行します。</p>
+            <pre><code class="nohighlight">[koji:ratpackapp]$ gradle run -t
+Continuous build is an incubating feature.
+:compileJava UP-TO-DATE
+:compileGroovy UP-TO-DATE
+:processResources
+:classes
+:configureRun
+:run
+[main] INFO ratpack.server.RatpackServer - Starting server...
+[main] INFO ratpack.server.RatpackServer - Building registry...
+[main] INFO ratpack.server.RatpackServer - Ratpack started (development) for http://localhost:5050
+
+BUILD SUCCESSFUL
+
+Total time: 9.313 secs
+
+Waiting for changes to input files of tasks... (ctrl-d to exit)
+
+</code></pre>
+            <p>これで、<a href="http://localhost:5050">http://localhost:5050</a>にアクセスするとちゃんとRatpackが起動していることが分かります。<br/>では、ソースコードの<code>render &quot;Hello World!&quot;</code>の部分を<code>render &quot;こんにちわRatpack！&quot;</code>に変更して保存しましょう。<br/>保存すると、Gradleが自動的にファイルの変更を検知してくれて、コンパイル&amp;再ロードしてくれます。<br/>少し待つ、おｍしくはGradleを実行しているコンソールでGradleが再ビルドした際のメッセージが流れたら、再度<a href="http://localhost:5050">http://localhost:5050</a>にアクセスしてみましょう。<br/>自動で変更内容が反映されて、画面には <strong>こんにちわRatpack！</strong> と表示されていますね。<br/>このように、Gradleを利用するとソースコードの修正が自動で繁栄冴えれるようになり、必要なライブラリ（当然Ratpack本体も）のダウンロード、設定をGradleがGroovyの代わりに受け持ってくれます。 </p>
+            <h2 id="id-63cf2091e465994cf906b89f1c709f899efcf6e4"><span class="number">3.3.</span>実際のAPIを追加する</h2>
+            <p>さて、では実際に日時を返すAPIを追加しましょう。 </p>
+            <p><code>Ratpack.groovy</code>を以下のように修正します。</p>
+            <pre><code class="nohighlight">import ratpack.jackson.Jackson
+
+import static ratpack.groovy.Groovy.ratpack
+import static ratpack.groovy.Groovy.groovyTemplate
+import ratpack.groovy.template.TextTemplateModule
+
+ratpack {
+
+    bindings {
+        module TextTemplateModule // for groovyTemplate
+    }
+
+    handlers {
+        path {
+            render &quot;こんにちわRatpack!&quot;
+        }
+
+        path(&quot;date&quot;) {
+            String date = new Date().format(&quot;yyyy/MM/dd HH:mm:ss&quot;)
+            render Jackson.json([&quot;date&quot;:date])
+        }
+    }
+}
+</code></pre>
+            <p>はい、出来ました！コレでだけで完了です！ 実際に<a href="http://localhost:5050/date">http://localhost:5050/date</a>にアクセスしてみてください。ちゃんとJSONで現在日時が返されているのが解ると思います。<br/>本当にJSON?renderしてるからテキストで返されてない？と思われる方も居るかもしれません。<br/>その場合はcurlコマンドで確認してみましょう。</p>
+            <pre><code class="nohighlight">[koji:ratpack]$ curl -X GET -i localhost:5050/date        
+HTTP/1.1 200 OK
+content-type: application/json
+content-length: 30
+connection: keep-alive
+
+{&quot;date&quot;:&quot;2016/06/20 15:00:45&quot;}%                                        
+</code></pre>
+            <p>ちゃんと<code>content-type</code>が<code>application/json</code>になっていますね！</p>
+            <h2 id="id-6519afc12890eb4e499aaa3393bdcc24b6768cf6"><span class="number">3.4.</span>参考：テンプレートを使う</h2>
+            <p><code>src/ratpack/Ratpack.groovy</code></p>
+            <pre><code class="nohighlight">import static ratpack.groovy.Groovy.ratpack
+import static ratpack.groovy.Groovy.groovyTemplate
+import ratpack.groovy.template.TextTemplateModule
+
+ratpack {
+
+    bindings {
+        module TextTemplateModule // for groovyTemplate
+    }
+
+    handlers {
+        path {
+            render &quot;こんにちわRatpack!&quot;
+        }
+        path(&quot;showTemplate&quot;) {
+            render groovyTemplate(&quot;index.html&quot;)
+        }
+    }
+}
+</code></pre>
+            <p><code>src/ratpack/public/scripts/sample.js</code></p>
+            <pre><code class="nohighlight">$(function(){
+    $(&quot;#sample&quot;).text(&quot;This text is filled by jQuery&quot;);
+});
+</code></pre>
+            <p><code>src/ratpack/public/styles/sample.css</code></p>
+            <pre><code class="nohighlight">h1 {
+    color:#abcdef;
+}
+</code></pre>
+            <p><code>src/ratpack/templates/index.html</code></p>
+            <pre><code class="nohighlight">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta name=&quot;robots&quot; content=&quot;noindex,nofollow&quot; /&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;This is Template&lt;/title&gt;
+&lt;!--** jQuery **--&gt;
+&lt;script src=&quot;http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.1.min.js&quot;&gt;&lt;/script&gt;
+&lt;!--** load CSS **--&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/styles/sample.css&quot;&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/scripts/sample.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Hello Ratpack Template&lt;/h1&gt;
+    &lt;div id=&quot;sample&quot;&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</code></pre>
+            <p>上記のRatpack.groovyの修正、html、JavaScript、CSSの追加ができたら、<a href="http://localhost:5050/showTemplate">http://localhost:5050/showTemplate</a>にアクセスしてみましょう。<br/>ちゃんとJavaScript、CSSが読み込めていることが確認できます。</p>
+            <p>なおディレクトリ構成は以下のようになrっています。</p>
+            <pre><code class="nohighlight">ratpackapp
+├── build.gradle
+└── src
+    ├── main
+    │   └── groovy
+    ├── ratpack
+    │   ├── Ratpack.groovy
+    │   ├── public
+    │   │   ├── images
+    │   │   ├── lib
+    │   │   ├── scripts
+    │   │   │   └── sample.js
+    │   │   └── styles
+    │   │       └── sample.css
+    │   └── templates
+    │       └── index.html
+    └── src
+        └── groovy
+</code></pre>
+          </div>
+          <div class="content-nav content-nav-bottom">
+            <a class="prev-page" href="helloworld.html">
+            <i class="fa fa-angle-left"></i>
+            <span class="number">2.</span>
+            Hello World
+            </a>
+            <a class="next-page" href="sample/1.html">
+            <span class="number">4.</span>
+            test1
+            <i class="fa fa-angle-right"></i>
+            </a>
+          </div>
+          <div class="footer">
+            <p class="credit text-muted">Powered by <a href="https://github.com/kobo/gaiden">Gaiden</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/highlight.js"></script>
+    <script src="js/application.js"></script>
+    <script src="js/my.js"></script>
+  </body>
+</html>
