@@ -9,3 +9,5 @@ title = "Ratpack 入門"
 
 // The path of directory to be outputted a document
 //outputDirectoryPath = "build"
+outputDirectoryPath = "docs"
+theme = 'default'

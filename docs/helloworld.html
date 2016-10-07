@@ -1,0 +1,158 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>2. Hello World - Ratpack 入門</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/highlight.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/my.css">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-84847594-1', 'auto');
+      ga('send', 'pageview');
+      
+    </script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="header">
+        <i class="fa fa-bars sidebar-toggle"></i>
+        <span class="title"><a href="index.html">Ratpack 入門</a></span>
+      </div>
+      <div class="sidebar">
+        <ul>
+          <li class="numbered visible"><a href="index.html" data-alt-hash="ratpack-"><span class="number">1.</span>Ratpack 入門</a></li>
+          <li class="numbered visible">
+            <a href="helloworld.html" data-alt-hash="hello-world"><span class="number">2.</span>Hello World</a>
+            <ul>
+              <li class="numbered visible"><a href="helloworld.html#id-e159b5fe3deff4bba9449ecfa2717fd318060353"><span class="number">2.1.</span>まとめ</a></li>
+            </ul>
+          </li>
+          <li class="numbered visible">
+            <a href="first-api-server.html" data-alt-hash="api"><span class="number">3.</span>初めてのAPIサーバ</a>
+            <ul>
+              <li class="numbered visible"><a href="first-api-server.html#id-f87b7fba2142c45cd5e01a39e2550b677566d1a9"><span class="number">3.1.</span>準備</a></li>
+              <li class="numbered visible"><a href="first-api-server.html#id-b349138158ba770231c6ce090da3a5f47515116a"><span class="number">3.2.</span>実行</a></li>
+              <li class="numbered visible"><a href="first-api-server.html#id-63cf2091e465994cf906b89f1c709f899efcf6e4"><span class="number">3.3.</span>実際のAPIを追加する</a></li>
+              <li class="numbered visible"><a href="first-api-server.html#id-6519afc12890eb4e499aaa3393bdcc24b6768cf6"><span class="number">3.4.</span>参考：テンプレートを使う</a></li>
+            </ul>
+          </li>
+          <li class="numbered visible">
+            <a href="sample/1.html" data-alt-hash="test1"><span class="number">4.</span>test1</a>
+            <ul>
+              <li class="numbered visible"><a href="sample/2.html" data-alt-hash="test2"><span class="number">4.1.</span>test2</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="content">
+        <div class="content-handle"></div>
+        <div class="content-container">
+          <div class="content-nav content-nav-top">
+            <a class="prev-page" href="index.html">
+            <i class="fa fa-angle-left"></i>
+            <span class="number">1.</span>
+            Ratpack 入門
+            </a>
+            <a class="next-page" href="first-api-server.html">
+            <span class="number">3.</span>
+            初めてのAPIサーバ
+            <i class="fa fa-angle-right"></i>
+            </a>
+          </div>
+          <div class="page-toc">
+            <ul>
+              <li class="numbered visible">
+                <a href="#hello-world"><span class="number">2.</span>Hello World</a>
+                <ul>
+                  <li class="numbered visible"><a href="#id-e159b5fe3deff4bba9449ecfa2717fd318060353"><span class="number">2.1.</span>まとめ</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="main-content">
+            <h1 id="hello-world"><span class="number">2.</span>Hello World</h1>
+            <p>まずはやっぱりハローワールドですよね。<br/>さて、Ratpackなのですが、そのシンプルな構成からいつくかの実行方法を選ぶことが出来ます。<br/>その中でもお勧めなのが、<a href="http://gradle.org/">Gradle</a>の機能を利用して実行するか、<a href="http://www.groovy-lang.org/">Groovy</a>自体の機能を利用して実行するかのどちらかになります。<br/>まずこのHelloWorldでは、Groovyバージョン、以降の入門、チュートリアル記事ではGradleバージョンを使ってRatpackに入門していきます。 </p>
+            <p>ということで、まずはGroovyをインストールしておきます。<br/>Groovyのインストール方法はとても簡単で、Linux、Macの場合は<a href="http://sdkman.io/">SDKMAN</a>をインストールしてから、<code>sdk install groovy</code>を実行するだけです。<br/>Windowsの場合はGroovyのインストーラがあるので、そちらを利用するのが一番簡単だと思われます。 何れにせよ、Java（8以降）をインストールして、JAVA_HOMEを設定しておいてください。<br/>この辺りは<a href="http://koji-k.github.io/groovy-tutorial/startup/install.html">Apache Groovyチュートリアルのinstall記事を参照してください。</a> </p>
+            <p>最終的に、コンソール、コマンドプロンプトで以下のコマンドを実行して、インストールされているGroovyのバージョンが表示されればOKです。</p>
+            <pre><code class="nohighlight">[koji:ratpack]$ groovy -e &quot;println GroovySystem.version&quot;
+2.4.7
+[koji:ratpack]$ 
+</code></pre>
+            <p>さて、準備出来ました！<br/>既に述べたように、最終的にはGradleをベースにしてRatpackアプリケーションを開発していくのがベターですが、シンプルなAPIサーバを構築するだけなのであれば、Groovyがあれば十分です。<br/>コレは大げさでも何でも無くて、Groovyがあれば <strong>Ratpackのダウンロード、インストールすら必要ないのです。</strong><br/>Ratpack使うのに何故Ratpackが必要ないんだ？と思われるかも知れませんが、Groovyの<code>Grab</code>という機能を使えば、Ratpackのダウンロード、設定まで <strong>全てGroovyが自動で面倒を見てくれます。</strong><br/>では、HelloWorldプログラムでそのGroovyの威力を見てみましょう！</p>
+            <p>まず、どこでもいいので以下のコードを <code>hello-ratpack.groovy</code>という名前で保存してください。</p>
+            <pre><code class="nohighlight">@Grapes([
+  @Grab(&#39;io.ratpack:ratpack-groovy:1.3.3&#39;),
+  @Grab(&#39;org.slf4j:slf4j-simple:1.7.12&#39;)
+])
+import static ratpack.groovy.Groovy.ratpack
+
+ratpack {
+    handlers {
+        path {
+            render &quot;Hello World!&quot;
+        }
+    }
+}
+</code></pre>
+            <p>では、<code>groovy</code>コマンドを使って、このコードを実行してみましょう。 </p>
+            <pre><code class="nohighlight">groovy hello-ratpack.groovy
+</code></pre>
+            <p>初めて実行する際は、Groovyが必要なライブラリ（当然Ratpack :))したりするので、少し時間がかかります。<br/>最終的に、コンソール上には以下のようなメッセージが出力されます。</p>
+            <pre><code class="nohighlight">[koji:ratpack]$ groovy hello-ratpack.groovy 
+[main] INFO ratpack.server.RatpackServer - Starting server...
+[main] INFO ratpack.server.RatpackServer - Building registry...
+[main] INFO ratpack.server.RatpackServer - Ratpack started (development) for http://localhost:5050
+</code></pre>
+            <p><a href="http://localhost:5050">http://localhost:5050</a>でRatpackが起動したというメッセージが出ています。<br/>では、ブラウザで実際にアクセスしてみてください。<br/>Hello Worldが実際に画面に出力されていますね！<br/>では、先ほどの<code>groovy</code>コマンドを使ってRatpackを起動したコンソール画面に戻って、<code>ctrl-c</code>を押して、Ratpackを終了させましょう。<br/>終了したら、プログラムを少し追加してみます。 </p>
+            <pre><code class="nohighlight">@Grapes([
+  @Grab(&#39;io.ratpack:ratpack-groovy:1.3.3&#39;),
+  @Grab(&#39;org.slf4j:slf4j-simple:1.7.12&#39;)
+])
+import static ratpack.groovy.Groovy.ratpack
+
+ratpack {
+    handlers {
+        path {
+            render &quot;Hello World!&quot;
+        }
+        path(&quot;:name&quot;) {
+            render &quot;Hello ${pathTokens.name}!&quot;
+        }
+    }
+}
+</code></pre>
+            <p><code>groovy hello-ratpack.groovy</code>を実行して、再度Ratpackを起動させます。<br/>起動したら、<a href="http://localhost:5050/koji">http://localhost:5050/koji</a>にアクセスしてみてください。<br/>URLの<code>koji</code>の部分が利用されて、<code>Hello koji!</code>と表示されています。<br/><code>koji</code>の部分を<code>hoge</code>など任意の値に変奥してアクセスすると、ちゃんと表示内容が変わります。 </p>
+            <h2 id="id-e159b5fe3deff4bba9449ecfa2717fd318060353"><span class="number">2.1.</span>まとめ</h2>
+            <p>いかがでしょうか。Groovyが実行できる環境があれば、その他のライブラリどころか、Ratpack本体すら手動でダウンロードすること無く、 <strong>Groovyを利用してたった1ファイルでアプリケーションサーバを構築することが出来ました。</strong><br/>このお手軽さこそがGroovyとRatpackの真骨頂です。<br/>とは言え、今回プログラムを修正したら一旦Ratpackを再起動しなければならなかったように、この方法だとちょっと面倒くさい面も有ります。<br/>そこで、今後はプログラムを修正したらその修正内容を自動で再ロードしてくれたり、より複雑なコードを書いたりした際にクラスパスを自動で通してくれたりと何かと便利なGradleを利用する方式でRatpackを利用する方法で説明してきます。</p>
+          </div>
+          <div class="content-nav content-nav-bottom">
+            <a class="prev-page" href="index.html">
+            <i class="fa fa-angle-left"></i>
+            <span class="number">1.</span>
+            Ratpack 入門
+            </a>
+            <a class="next-page" href="first-api-server.html">
+            <span class="number">3.</span>
+            初めてのAPIサーバ
+            <i class="fa fa-angle-right"></i>
+            </a>
+          </div>
+          <div class="footer">
+            <p class="credit text-muted">Powered by <a href="https://github.com/kobo/gaiden">Gaiden</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/highlight.js"></script>
+    <script src="js/application.js"></script>
+    <script src="js/my.js"></script>
+  </body>
+</html>
