@@ -1,0 +1,287 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>4. Handlerのメモ（暫定） - Ratpack 入門</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/my.css">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-84847594-1', 'auto');
+      ga('send', 'pageview');
+      
+    </script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="header">
+        <i class="fa fa-bars sidebar-toggle"></i>
+        <span class="title"><a href="../index.html">Ratpack 入門</a></span>
+      </div>
+      <div class="sidebar">
+        <ul>
+          <li class="numbered visible"><a href="../index.html" data-alt-hash="ratpack-"><span class="number">1.</span>Ratpack 入門</a></li>
+          <li class="numbered visible">
+            <a href="../helloworld.html" data-alt-hash="hello-world"><span class="number">2.</span>Hello World</a>
+            <ul>
+              <li class="numbered visible"><a href="../helloworld.html#id-e159b5fe3deff4bba9449ecfa2717fd318060353"><span class="number">2.1.</span>まとめ</a></li>
+            </ul>
+          </li>
+          <li class="numbered visible">
+            <a href="../first-api-server.html" data-alt-hash="api"><span class="number">3.</span>初めてのAPIサーバ</a>
+            <ul>
+              <li class="numbered visible"><a href="../first-api-server.html#id-f87b7fba2142c45cd5e01a39e2550b677566d1a9"><span class="number">3.1.</span>準備</a></li>
+              <li class="numbered visible"><a href="../first-api-server.html#id-b349138158ba770231c6ce090da3a5f47515116a"><span class="number">3.2.</span>実行</a></li>
+              <li class="numbered visible"><a href="../first-api-server.html#id-63cf2091e465994cf906b89f1c709f899efcf6e4"><span class="number">3.3.</span>実際のAPIを追加する</a></li>
+              <li class="numbered visible"><a href="../first-api-server.html#id-6519afc12890eb4e499aaa3393bdcc24b6768cf6"><span class="number">3.4.</span>参考：テンプレートを使う</a></li>
+            </ul>
+          </li>
+          <li class="numbered visible"><a href="index.html" data-alt-hash="handler"><span class="number">4.</span>Handlerのメモ（暫定）</a></li>
+          <li class="numbered visible">
+            <a href="../sample/1.html" data-alt-hash="test1"><span class="number">5.</span>test1</a>
+            <ul>
+              <li class="numbered visible"><a href="../sample/2.html" data-alt-hash="test2"><span class="number">5.1.</span>test2</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="content">
+        <div class="content-handle"></div>
+        <div class="content-container">
+          <div class="content-nav content-nav-top">
+            <a class="prev-page" href="../first-api-server.html">
+            <i class="fa fa-angle-left"></i>
+            <span class="number">3.</span>
+            初めてのAPIサーバ
+            </a>
+            <a class="next-page" href="../sample/1.html">
+            <span class="number">5.</span>
+            test1
+            <i class="fa fa-angle-right"></i>
+            </a>
+          </div>
+          <div class="page-toc">
+            <ul>
+              <li class="numbered visible"><a href="#handler"><span class="number">4.</span>Handlerのメモ（暫定）</a></li>
+            </ul>
+          </div>
+          <div class="main-content">
+            <h1 id="handler"><span class="number">4.</span>Handlerのメモ（暫定）</h1>
+            <p>適当なファイルに保存して、通常のgroovyコマンドで実行するだけ。</p>
+            <pre><code class="groovy">@Grapes([
+  @Grab(&#39;io.ratpack:ratpack-groovy:1.4.5&#39;),
+  @Grab(&#39;org.slf4j:slf4j-simple:1.7.20&#39;)
+])
+
+import ratpack.groovy.handling.GroovyChainAction
+import ratpack.groovy.handling.GroovyContext
+import ratpack.groovy.handling.GroovyHandler
+import ratpack.handling.ByMethodSpec
+import ratpack.handling.Context
+import ratpack.handling.Handler
+import ratpack.handling.InjectionHandler
+import static ratpack.groovy.Groovy.ratpack
+
+ratpack {
+
+    serverConfig {
+        threads 1
+    }
+
+    bindings {
+        // bindingInstanceで何かのインスタンスを生成して渡すことで、Ratpackが自動的にそのインスタンスを管理してDIしてくれるようになる。（つまりSingleton）
+        bindInstance(new PiyoGroovyHandler2())
+        bindInstance(new PiyoGroovyHandler4())
+        bindInstance(new Date()) // Java標準のクラスでも当然OK
+        bindInstance(new PiyoChain())
+    }
+
+    // handlersの中では、GroovyChainのメソッドが利用できる。（delegateされてる）
+    handlers {
+        // 同じURLで、異なるHTTPメソッドで異なる処理する場合は、pathでURLを指定して、byMethodの中でそれぞれ指定する。
+        path(&quot;test&quot;) {
+            byMethod {
+                get {
+                    render &quot;test-verbose(GET)&quot;
+                }
+                post {
+                    render &quot;test-verbose(POST)&quot;
+                }
+            }
+        }
+        // 上記の処理を無駄に冗長に書くとこうなる。
+        path(&quot;test-verbose&quot;) {
+            byMethod { ByMethodSpec byMethodSpec -&gt; byMethodSpec
+                .get {
+                    render &quot;test-verbose(GET)&quot;
+                }
+                .post {
+                    render &quot;test-verbose(POST)&quot;
+                }
+            }
+        }
+
+        // 当然、上記のように書いていくとratpack.groovyがドンドン肥大化していく。
+        // そのため、実際の処理を別のクラス（Handler関連のクラスをimplements、継承したクラス）に追い出し、以下のようにして呼び出すことが出来る。
+        path(&quot;piyo&quot;) {
+            byMethod {
+                get {context.insert(new PiyoGroovyHandler())}
+                post {context.insert(new PiyoGroovyHandler())}
+            }
+        }
+
+
+        // Handler系クラスには、その中でHTTPメソッドを指定できるので、そのようなHandlerを利用するのであれば、このように普通にpathで指定すればOK
+        path(&quot;piyo2&quot;, new PiyoGroovyHandler2())
+        path(&quot;piyo3&quot;, new PiyoGroovyHandler3())
+
+        // bindInstance(new PiyoGroovyHandler2())をbindingsの中に指定しているためにアクセス毎にPiyoGroovyHandlerをnewする必要は無い！
+        // Classオブジェクトを渡すことで、Ratpacが自動的にインスタンスを探して渡してくれる。
+        // Ratpackは大量のアクセスをNonBlockingな処理で大量にこなせる、ということを謳っているので、そのもそも大量のアクセスをこなしたいのにアクセス毎にインスタンスをnewしているのは無駄。
+        // なので基本的にはHandlerなどはbindInstanceなどでSingletonとして扱うようにするのがベター。
+        path(&quot;piyo-x&quot;, PiyoGroovyHandler2)
+
+
+        // この呼び出し自体は一見何の変哲もないもだけど、PiyoGroovyHandlerのhandleはDateクラスを要求している。
+        // それはRatpackによって自動的にbindInstanceされたインスタンス群から自動的に合致する型の値が検索されて渡される（DI）
+        path(&quot;piyo4&quot;, new PiyoGroovyHandler4())
+
+        // 今までのやり方で分かるように、処理をHandlerに切り出すことでratpack.groovyが肥大化するのを防ぐことが出来る。
+        // ただそれでもURLの指定を全てratpack.groovyの中にしなければならない、という状況に変わりはない。
+        // そこで、URLの指定自体も「ChainAction」に切り出すことが出来る。
+        // そのChainActionの中で、このratpack.groovyの用にURLの指定が自由に出来る。
+        insert(PiyoChain)
+        //insert(new PiyoChain()) // メリットは無いけど、コレもnewしてインスタンスを渡してもOK
+
+
+        // 注意
+        // Handlerとは直接関係ないが、「同じURLで別々のHTTPメソッドを受け取る」場合に、以下のようにbyMethodを利用せずに記述すると、ratpack.groovyの中で最初に定義されている物のみ有効になる。
+        // つまりgetは405が返る
+        // ---------------------------------------------
+        // [koji:~]$ curl localhost:5050/piyo-error -X POST
+        // piyop%
+        // [koji:~]$ curl localhost:5050/piyo-error -X GET
+        // Client error 405%
+        // [koji:~]$
+        // ---------------------------------------------
+        post(&quot;piyo-error&quot;) {render &quot;piyop&quot;}
+        get(&quot;piyo-error&quot;)  {render &quot;piyog&quot;}
+
+        // これで、静的なファイルにアクセスできるようになる。
+        // src/ratpack/publicがトップディレクトリに鳴って、http://localhost:5050/data/sample.txtみたいな感じでアクセエスできる。
+        files { dir &quot;public&quot; }
+    }
+
+}
+
+// -----------------------------------------------------------------------------
+// ココ以降は利用されるクラスの定義
+// -----------------------------------------------------------------------------
+
+class PiyoGroovyHandler extends GroovyHandler {
+    void handle(GroovyContext context) {
+        context.render(&quot;/piyo&quot;)
+    }
+}
+
+class PiyoGroovyHandler2 extends GroovyHandler {
+    void handle(GroovyContext context) {
+        context.byMethod {
+            get {
+                context.render(&quot;/piyo2(GET)&quot;)
+            }
+            post {
+                context.render(&quot;piyo2(POST)&quot;)
+            }
+        }
+    }
+}
+
+// GroovyHandlerじゃなくても、ratpack.handling.Handlerを実装することも出来る。
+// ただし、よく見れば分かるけど、getとpostにドットを付けてちゃんとJavaライクにチェインしないといけないので若干不便。多分これはJava用。
+class PiyoGroovyHandler3 implements Handler {
+    void handle(Context context) {
+        context.byMethod {
+            it.get {
+                context.render(&quot;/piyo3(GET)&quot;)
+            }
+            .post {
+                context.render(&quot;piyo3(POST)&quot;)
+            }
+        }
+    }
+}
+
+// handleメソッドの第1引数（Context）以降の引数は、RatpackによってbindInstance()されたものの中から自動で探されてDIされる。
+// そのためには、InjectionHandlerをextendsしないと駄目
+// GroovyHandlerじゃないので少し記述が冗長になる。（Javaライクになる）
+// Ratpack起動時にbindInstanceしたDateがDIされるので、何度実行しても同じ日付が表示されることが確認できる。（開発時の再コンパイルが走るとその時点でリフレッシュされる）
+class PiyoGroovyHandler4 extends InjectionHandler {
+
+    void handle(Context context, Date startup) {
+
+        // GroovyHandlerじゃないので記述が少し煩雑になるけど、もしHTTPメソッドは何でもOKなのであれば、下記の処理は、
+        // context.render xxx
+        // に置き換えることは可能。
+
+        context.byMethod {
+            it.post {
+                context.render startup.format(&quot;yyyy/MM/dd HH:mm:ss&quot;) + &quot;(POST)&quot;
+            }
+            .get {
+                context.render startup.format(&quot;yyyy/MM/dd HH:mm:ss&quot;) + &quot;(GET)&quot;
+            }
+        }
+    }
+}
+
+// GroovyChainActionを継承したクラスを用意することで、URLの指定もratpack.groovyから追い出すことが出来るようになる。
+// execute()の中に、ratpack.groovyのhandlers{...}に記述していた内容をそのまま書ける。
+class PiyoChain extends GroovyChainAction {
+    @Override
+    void execute() {
+        path(&quot;chain-piyo2&quot;, PiyoGroovyHandler2)
+        path(&quot;chain-piyo4&quot;, PiyoGroovyHandler4)
+    }
+}
+</code></pre>
+          </div>
+          <div class="content-nav content-nav-bottom">
+            <a class="prev-page" href="../first-api-server.html">
+            <i class="fa fa-angle-left"></i>
+            <span class="number">3.</span>
+            初めてのAPIサーバ
+            </a>
+            <a class="next-page" href="../sample/1.html">
+            <span class="number">5.</span>
+            test1
+            <i class="fa fa-angle-right"></i>
+            </a>
+          </div>
+          <div class="footer">
+            <p class="credit text-muted">Powered by <a href="https://github.com/kobo/gaiden">Gaiden</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../js/jquery-2.1.1.min.js"></script>
+    <script src="../js/highlight.js"></script>
+    <script src="../js/application.js"></script>
+    <script src="../js/my.js"></script>
+    <script>
+      if (window.WebSocket) {
+        var socket = new WebSocket("ws://localhost:57077/");
+        socket.onmessage = function () {
+          location.reload();
+        };
+      }
+    </script>
+  </body>
+</html>

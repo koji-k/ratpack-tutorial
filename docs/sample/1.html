@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>4. test1 - Ratpack 入門</title>
+    <title>5. test1 - Ratpack 入門</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/font-awesome.min.css">
@@ -43,10 +43,11 @@
               <li class="numbered visible"><a href="../first-api-server.html#id-6519afc12890eb4e499aaa3393bdcc24b6768cf6"><span class="number">3.4.</span>参考：テンプレートを使う</a></li>
             </ul>
           </li>
+          <li class="numbered visible"><a href="../handler/index.html" data-alt-hash="handler"><span class="number">4.</span>Handlerのメモ（暫定）</a></li>
           <li class="numbered visible">
-            <a href="1.html" data-alt-hash="test1"><span class="number">4.</span>test1</a>
+            <a href="1.html" data-alt-hash="test1"><span class="number">5.</span>test1</a>
             <ul>
-              <li class="numbered visible"><a href="2.html" data-alt-hash="test2"><span class="number">4.1.</span>test2</a></li>
+              <li class="numbered visible"><a href="2.html" data-alt-hash="test2"><span class="number">5.1.</span>test2</a></li>
             </ul>
           </li>
         </ul>
@@ -55,33 +56,33 @@
         <div class="content-handle"></div>
         <div class="content-container">
           <div class="content-nav content-nav-top">
-            <a class="prev-page" href="../first-api-server.html">
+            <a class="prev-page" href="../handler/index.html">
             <i class="fa fa-angle-left"></i>
-            <span class="number">3.</span>
-            初めてのAPIサーバ
+            <span class="number">4.</span>
+            Handlerのメモ（暫定）
             </a>
             <a class="next-page" href="2.html">
-            <span class="number">4.1.</span>
+            <span class="number">5.1.</span>
             test2
             <i class="fa fa-angle-right"></i>
             </a>
           </div>
           <div class="page-toc">
             <ul>
-              <li class="numbered visible"><a href="#test1"><span class="number">4.</span>test1</a></li>
+              <li class="numbered visible"><a href="#test1"><span class="number">5.</span>test1</a></li>
             </ul>
           </div>
           <div class="main-content">
-            <h1 id="test1"><span class="number">4.</span>test1</h1>
+            <h1 id="test1"><span class="number">5.</span>test1</h1>
           </div>
           <div class="content-nav content-nav-bottom">
-            <a class="prev-page" href="../first-api-server.html">
+            <a class="prev-page" href="../handler/index.html">
             <i class="fa fa-angle-left"></i>
-            <span class="number">3.</span>
-            初めてのAPIサーバ
+            <span class="number">4.</span>
+            Handlerのメモ（暫定）
             </a>
             <a class="next-page" href="2.html">
-            <span class="number">4.1.</span>
+            <span class="number">5.1.</span>
             test2
             <i class="fa fa-angle-right"></i>
             </a>
@@ -96,5 +97,13 @@
     <script src="../js/highlight.js"></script>
     <script src="../js/application.js"></script>
     <script src="../js/my.js"></script>
+    <script>
+      if (window.WebSocket) {
+        var socket = new WebSocket("ws://localhost:57077/");
+        socket.onmessage = function () {
+          location.reload();
+        };
+      }
+    </script>
   </body>
 </html>
