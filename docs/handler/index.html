@@ -87,6 +87,8 @@ import ratpack.handling.ByMethodSpec
 import ratpack.handling.Context
 import ratpack.handling.Handler
 import ratpack.handling.InjectionHandler
+import ratpack.func.Action
+import ratpack.handling.Chain
 import static ratpack.groovy.Groovy.ratpack
 
 ratpack {
@@ -109,10 +111,10 @@ ratpack {
         path(&quot;test&quot;) {
             byMethod {
                 get {
-                    render &quot;test-verbose(GET)&quot;
+                    render &quot;test(GET)&quot;
                 }
                 post {
-                    render &quot;test-verbose(POST)&quot;
+                    render &quot;test(POST)&quot;
                 }
             }
         }
@@ -161,6 +163,57 @@ ratpack {
         //insert(new PiyoChain()) // メリットは無いけど、コレもnewしてインスタンスを渡してもOK
 
 
+        // このように、context#insertに渡されるHandlerが複数ある場合、それぞれのHandlerの中でcontext#nextを実行しないと、その時点で処理が終了する。
+        // insertに渡された順番で、各Handlerがそれぞれ実行されていく（ちゃんとnextを書いていれば。）
+        // 例えば、Handler1の中のnextを消すと、Handler1で処理が終了する。（クライアントには404が返る）
+        // insertに指定されたHandlerたちは、それぞれ最終的にContext#next()を実行して、自分の後に指定されているHandlerに処理を移譲していく感じ。
+        get(&quot;handler-chain1&quot;) {
+            insert(
+                    new Handler1(),
+                    new Handler2(),
+                    new Handler3()
+            )
+        }
+
+        // 複数のinsertを同じ動作になるっぽいけど、もしかしたらそれぞれ別のスレッドになったりして効率が悪いかも？
+        // 基本的には上記のinsertに複数のHandlerを渡す方式のほうが良さそう。
+        get(&quot;handler-chain2&quot;) {
+            insert(new Handler4())
+            insert(new Handler5())
+            insert(new Handler6())
+        }
+
+        // Handler側に工夫すれば、それぞれ入れ子にすることも出来る。
+        // 実行結果は
+        // a
+        // a_1
+        // a_2
+        // b
+        // b_1
+        // b_1_1
+        // b_1_2
+        // b_2
+        // This is Handler 8
+        // となる。（Ratpack側のコンソールで確認できる）
+        // この実行結果と、Handler7#handle()を見れば分かるとおり、Context#insertは、次のHandlerを登録しつつ、自動的にContext#nextを読んでいる。
+        get(&quot;handler-chain3&quot;) {
+            insert(
+                new Handler7(&quot;a&quot;,
+                    new Handler7(&quot;a_1&quot;),
+                    new Handler7(&quot;a_2&quot;),
+                ),
+                new Handler7(&quot;b&quot;,
+                    new Handler7(&quot;b_1&quot;,
+                        new Handler7(&quot;b_1_1&quot;),
+                        new Handler7(&quot;b_1_2&quot;),
+                    ),
+                    new Handler7(&quot;b_2&quot;)
+                ),
+                new Handler8()
+            )
+        }
+
+
         // 注意
         // Handlerとは直接関係ないが、「同じURLで別々のHTTPメソッドを受け取る」場合に、以下のようにbyMethodを利用せずに記述すると、ratpack.groovyの中で最初に定義されている物のみ有効になる。
         // つまりgetは405が返る
@@ -180,10 +233,6 @@ ratpack {
     }
 
 }
-
-// -----------------------------------------------------------------------------
-// ココ以降は利用されるクラスの定義
-// -----------------------------------------------------------------------------
 
 class PiyoGroovyHandler extends GroovyHandler {
     void handle(GroovyContext context) {
@@ -251,6 +300,79 @@ class PiyoChain extends GroovyChainAction {
         path(&quot;chain-piyo4&quot;, PiyoGroovyHandler4)
     }
 }
+
+// 使い方は同じだけど、上記のGroovyChainActionはこのようにAction&lt;Chain&gt;を実装することで代用できる。
+class PiyoChain2 implements Action&lt;Chain&gt; {
+    @Override
+    void execute(Chain chain) {
+        chain.path(&quot;chain2-piyo2&quot;, PiyoGroovyHandler2)
+        chain.path(&quot;chain2-piyo4&quot;, PiyoGroovyHandler4)
+    }
+}
+
+class Handler1 extends GroovyHandler {
+    void handle(GroovyContext context) {
+        println &quot;This is Handler 1&quot;
+        context.next()
+    }
+}
+
+class Handler2 extends GroovyHandler {
+    void handle(GroovyContext context) {
+        println &quot;This is Handler 2&quot;
+        context.next()
+    }
+}
+
+class Handler3 extends GroovyHandler {
+    void handle(GroovyContext context) {
+        println &quot;This is Handler 3&quot;
+        context.render &quot;This is Handler 3&quot;
+    }
+}
+
+class Handler4 extends GroovyHandler {
+    void handle(GroovyContext context) {
+        println &quot;This is Handler 4&quot;
+    }
+}
+
+class Handler5 extends GroovyHandler {
+    void handle(GroovyContext context) {
+        println &quot;This is Handler 5&quot;
+    }
+}
+
+class Handler6 extends GroovyHandler {
+    void handle(GroovyContext context) {
+        println &quot;This is Handler 6&quot;
+        context.render &quot;This is Handler 6&quot;
+    }
+}
+
+class Handler7 extends GroovyHandler {
+    String message
+    Handler[] handlers
+    Handler7(String message, Handler... handlers) {
+        this.message = message
+        this.handlers = handlers
+    }
+
+    void handle(GroovyContext context) {
+        println &quot;${message}&quot;
+        if (handlers) {
+            context.insert(handlers)
+        } else {
+            context.next()
+        }
+    }
+}
+class Handler8 extends GroovyHandler {
+    void handle(GroovyContext context) {
+        println &quot;This is Handler 8&quot;
+        context.render &quot;This is Handler 8&quot;
+    }
+}
 </code></pre>
           </div>
           <div class="content-nav content-nav-bottom">
@@ -277,7 +399,7 @@ class PiyoChain extends GroovyChainAction {
     <script src="../js/my.js"></script>
     <script>
       if (window.WebSocket) {
-        var socket = new WebSocket("ws://localhost:57077/");
+        var socket = new WebSocket("ws://localhost:48284/");
         socket.onmessage = function () {
           location.reload();
         };
