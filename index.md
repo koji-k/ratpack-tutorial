@@ -11,6 +11,7 @@ Apache Groovy自体をよく知らない、という方は[こちらにApache Gr
 このチュートリアルは[@saba1024](https://twitter.com/saba1024)が個人的に作成しているものです。  
 問題等ございましたら優しくお知らせください。。。
 なお、本入門記事はRatpack1.3.3で確認しています。  
+このチュートリアル自体の[Githubリポジトリはこちらです。](https://github.com/koji-k/ratpack-tutorial)
 
 このページは、ApacheGroovy製のドキュメンテーションツール[Gaiden](https://github.com/kobo/gaiden)を使って作成されています。  
 Gaidenを利用している本ページのリポジトリは[こちらにあります。](https://github.com/koji-k/ratpack-tutorial)

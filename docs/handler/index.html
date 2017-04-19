@@ -45,9 +45,16 @@
           </li>
           <li class="numbered visible"><a href="index.html" data-alt-hash="handler"><span class="number">4.</span>Handlerのメモ（暫定）</a></li>
           <li class="numbered visible">
-            <a href="../sample/1.html" data-alt-hash="test1"><span class="number">5.</span>test1</a>
+            <a href="../async-nonblocking/index.html" data-alt-hash="nonblocking"><span class="number">5.</span>NonBlocking（暫定メモ）</a>
             <ul>
-              <li class="numbered visible"><a href="../sample/2.html" data-alt-hash="test2"><span class="number">5.1.</span>test2</a></li>
+              <li class="numbered visible"><a href="../async-nonblocking/index.html#id-09c15570641ffb2d796baa650ab20b86bef94f03"><span class="number">5.1.</span>基本的なNonBlockingな処理</a></li>
+              <li class="numbered visible"><a href="../async-nonblocking/index.html#promisenonblocking"><span class="number">5.2.</span>PromiseからさらにNonBlockingな処理を続ける</a></li>
+            </ul>
+          </li>
+          <li class="numbered visible">
+            <a href="../sample/1.html" data-alt-hash="test1"><span class="number">6.</span>test1</a>
+            <ul>
+              <li class="numbered visible"><a href="../sample/2.html" data-alt-hash="test2"><span class="number">6.1.</span>test2</a></li>
             </ul>
           </li>
         </ul>
@@ -61,9 +68,9 @@
             <span class="number">3.</span>
             初めてのAPIサーバ
             </a>
-            <a class="next-page" href="../sample/1.html">
+            <a class="next-page" href="../async-nonblocking/index.html">
             <span class="number">5.</span>
-            test1
+            NonBlocking（暫定メモ）
             <i class="fa fa-angle-right"></i>
             </a>
           </div>
@@ -381,9 +388,9 @@ class Handler8 extends GroovyHandler {
             <span class="number">3.</span>
             初めてのAPIサーバ
             </a>
-            <a class="next-page" href="../sample/1.html">
+            <a class="next-page" href="../async-nonblocking/index.html">
             <span class="number">5.</span>
-            test1
+            NonBlocking（暫定メモ）
             <i class="fa fa-angle-right"></i>
             </a>
           </div>
@@ -397,13 +404,5 @@ class Handler8 extends GroovyHandler {
     <script src="../js/highlight.js"></script>
     <script src="../js/application.js"></script>
     <script src="../js/my.js"></script>
-    <script>
-      if (window.WebSocket) {
-        var socket = new WebSocket("ws://localhost:48284/");
-        socket.onmessage = function () {
-          location.reload();
-        };
-      }
-    </script>
   </body>
 </html>

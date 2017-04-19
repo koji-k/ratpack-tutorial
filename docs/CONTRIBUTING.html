@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>1. Ratpack 入門 - Ratpack 入門</title>
+    <title>Contributionガイド - Ratpack 入門</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
@@ -63,34 +63,56 @@
         <div class="content-handle"></div>
         <div class="content-container">
           <div class="content-nav content-nav-top">
-            <a class="next-page" href="helloworld.html">
-            <span class="number">2.</span>
-            Hello World
-            <i class="fa fa-angle-right"></i>
-            </a>
           </div>
           <div class="page-toc">
             <ul>
-              <li class="numbered visible"><a href="#ratpack-"><span class="number">1.</span>Ratpack 入門</a></li>
+              <li class="unnumbered visible">
+                <a href="#contribution">Contributionガイド</a>
+                <ul>
+                  <li class="unnumbered visible"><a href="#id-a0549121c23968b550c12b81d8e12e5b28b95c3b">貢献方法</a></li>
+                  <li class="unnumbered visible">
+                    <a href="#id-15a2cafb11aecb3b160ad1f626ccae5d6cccdf73">文章スタイル</a>
+                    <ul>
+                      <li class="unnumbered visible"><a href="#id-d5b017b27f7f7264183050ee45a4150fd8876c18">文体</a></li>
+                      <li class="unnumbered visible"><a href="#id-214cf3b385cc1165fb60bddfc50fa44b0a9134c1">サンプルコード</a></li>
+                    </ul>
+                  </li>
+                  <li class="unnumbered visible"><a href="#markdown">文章（Markdown）のビルド</a></li>
+                </ul>
+              </li>
             </ul>
           </div>
           <div class="main-content">
-            <h1 id="ratpack-"><span class="number">1.</span>Ratpack 入門</h1>
-            <p>このサイトは、モダンなノンブロッキング、非同期なWEBアプリケーションを構築できる<a href="https://ratpack.io/">Ratpack</a>の入門、チュートリアルです。<br/>Ratpack自体はシンプルなJavaライブラリですが、Nettyをベースとして高速なモダンWEBアプリケーションが簡単に作成できます。<br/>RubyでいうSinatra、Scalaでいうscalatraなどに該当します。<br/>Ratpackは<a href="http://www.groovy-lang.org/">Apache Groovy</a>で記述していきます。<br/>（Javaを利用することもできます。）</p>
-            <p>Apache Groovy自体をよく知らない、という方は<a href="http://koji-k.github.io/groovy-tutorial/">こちらにApache Groovのチュートリアルがあります</a>ので、そちらも合わせてご覧ください。</p>
-            <p>このチュートリアルは<a href="https://twitter.com/saba1024">@saba1024</a>が個人的に作成しているものです。<br/>問題等ございましたら優しくお知らせください。。。 なお、本入門記事はRatpack1.3.3で確認しています。<br/>このチュートリアル自体の<a href="https://github.com/koji-k/ratpack-tutorial">Githubリポジトリはこちらです。</a></p>
-            <p>このページは、ApacheGroovy製のドキュメンテーションツール<a href="https://github.com/kobo/gaiden">Gaiden</a>を使って作成されています。<br/>Gaidenを利用している本ページのリポジトリは<a href="https://github.com/koji-k/ratpack-tutorial">こちらにあります。</a></p>
-            <pre><code class="nohighlight">2016/10/07 公開方法をgh-pagesブランチからmasterブランチのdocsに変更
-2016/06/20 HelloWorld追加
-2016/06/12 リポジトリ作成
+            <h1 id="contribution">Contributionガイド</h1>
+            <p><strong>Ratpack 入門</strong> に興味をもって頂きありがとうございます！</p>
+            <p>本サイトに貢献頂ける方は、以下の内容を一読の上、お願いします。</p>
+            <h2 id="id-a0549121c23968b550c12b81d8e12e5b28b95c3b">貢献方法</h2>
+            <ol>
+              <li>このリポジトリをフォークします。</li>
+              <li><code>master</code> ブランチからトピックブランチを作成します。: <code>git checkout -b my-new-branch master</code></li>
+              <li>作成したトピックブランチで作業します。</li>
+              <li>変更をコミットします: <code>git commit -am &quot;Hogeについて追記。&quot;</code></li>
+              <li>フォークした自分のリポジトリに pushします。: <code>git push origin my-new-branch</code></li>
+              <li>プルリクエストを <code>koji-k/ratpack-tutorial</code> の <code>master</code> ブランチに送ります。</li>
+            </ol>
+            <h2 id="id-15a2cafb11aecb3b160ad1f626ccae5d6cccdf73">文章スタイル</h2>
+            <h3 id="id-d5b017b27f7f7264183050ee45a4150fd8876c18">文体</h3>
+            <p>語尾は「だ、である」などの硬い表現方法ではなく、「です、ます」という丁寧な表現を心がけるようにしてください。</p>
+            <p>例：<br/>OK: Ratpackはとても素敵なAsync &amp; Non-Blockingなweb frameworkです。<br/>NG: Ratpackはとても素敵なAsync &amp; Non-Blockingなweb frameworkだ。</p>
+            <h3 id="id-214cf3b385cc1165fb60bddfc50fa44b0a9134c1">サンプルコード</h3>
+            <p>サンプルコードを記載する場合には、可能な限りそのサンプルコードのみで正常に動作するようにしてください。</p>
+            <p>NGの例：この例示方法だと、date変数が宣言されていないのでエラーになってしまいます。</p>
+            <pre><code class="groovy">assert &quot;2017/03/29&quot; == date.format(&quot;YYYY/MM/dd&quot;)
 </code></pre>
+            <p>OKの例：以下のコードであれば、読者はGroovyConsoleなどでそのまま問題なく動作させることができます。</p>
+            <pre><code class="groovy">def date = new Date()
+assert &quot;2017/03/29&quot; == date.format(&quot;YYYY/MM/dd&quot;)
+</code></pre>
+            <p>サンプルコードにそのまま載せられないような情報がある場合は、その旨別途説明を記載するようにしてください。（例：サンプルを実行するためにはhoge.txtを/tmpに配置してください、等々）</p>
+            <h2 id="markdown">文章（Markdown）のビルド</h2>
+            <p><code>gaiden build</code>、もしくは<code>gaiden watch</code>で行えます。<br/>最終的なcommitの前には、必ず<code>gaiden build</code>を一度実行するようにしてください。<br/><code>gaiden watch</code>でもHTMLは生成されますが、確認用のWebsocketコードが挿入されてしまいます。<br/>動作自体に問題はありませんが、不要なHTMLファイルまでcommitされることになりますので、commit前には<code>gaiden build</code>で綺麗なHTMLを生成するようにしてください。</p>
           </div>
           <div class="content-nav content-nav-bottom">
-            <a class="next-page" href="helloworld.html">
-            <span class="number">2.</span>
-            Hello World
-            <i class="fa fa-angle-right"></i>
-            </a>
           </div>
           <div class="footer">
             <p class="credit text-muted">Powered by <a href="https://github.com/kobo/gaiden">Gaiden</a></p>
